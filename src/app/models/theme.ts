@@ -11,8 +11,7 @@ const themeSchema = new mongoose.Schema({
     default: 'not_studied',
   },
   reviewDates: [{ type: Date }],
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+  
+},{timestamps: true});
 
 export default mongoose.models.Theme || mongoose.model('Theme', themeSchema);

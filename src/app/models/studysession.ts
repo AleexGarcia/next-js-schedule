@@ -9,9 +9,7 @@ const studySessionSchema = new mongoose.Schema({
     type: String, 
     enum: ['not_studied', 'in_progress', 'completed'],
     default: 'not_studied',
-  },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+  }
+},{timestamps:true});
 
 export default mongoose.models.StudySession || mongoose.model('StudySession', studySessionSchema);

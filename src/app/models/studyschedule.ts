@@ -8,8 +8,6 @@ const studyScheduleSchema = new mongoose.Schema({
   endDate: { type: Date, required: true },
   dailySubjectsCount: { type: Number, required: true }, // Quantas matérias estudar por dia
   status: { type: String, enum: ['ongoing', 'completed'], default: 'ongoing' },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+},{timestamps:true});
 
 export default mongoose.models.StudySchedule || mongoose.model('StudySchedule', studyScheduleSchema);
