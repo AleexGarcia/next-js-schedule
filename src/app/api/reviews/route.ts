@@ -1,5 +1,4 @@
 // /src/app/api/reviews/route.ts
-
 import { dbConnection } from '@/app/lib/db_connection';  // Conectar com o MongoDB
 import Review from '@/app/models/review';  // Modelo de Review
 import { NextRequest, NextResponse } from 'next/server';
