@@ -3,20 +3,6 @@ import User from '@/app/models/user';  // Modelo de User
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 
-
-export async function GET(request: NextRequest) {
-  await dbConnection.connect(); // Conectar ao banco de dados
-
-  try {
-    const users = await User.find();  // Buscar todos os usuários
-    return NextResponse.json(users);  // Retornar os usuários como JSON
-  } catch (error) {
-    return NextResponse.json({ error: 'Erro ao buscar os usuários' }, { status: 500 });
-  } finally {
-    await dbConnection.disconnect();
-  }
-}
-
 export async function POST(request: NextRequest) {
   await dbConnection.connect();
 
