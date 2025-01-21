@@ -11,7 +11,7 @@ export default function Home() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm ">
-        <form className="space-y-6" action={login} method="POST">
+        <form className="space-y-6" action={login}>
           <div>
             <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900 dark:text-white">Email address</label>
             <div className="mt-2">
