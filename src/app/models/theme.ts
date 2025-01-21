@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 
 const themeSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  description: { type: String },
   subjectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Subject', required: true },
   studyStatus: {
     type: String,
@@ -11,7 +10,6 @@ const themeSchema = new mongoose.Schema({
     default: 'not_studied',
   },
   reviewDates: [{ type: Date }],
-  
 },{timestamps: true});
 
 export default mongoose.models.Theme || mongoose.model('Theme', themeSchema);
