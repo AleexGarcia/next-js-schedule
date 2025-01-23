@@ -1,19 +1,9 @@
 'use client'
 
-type FormData = {
-    startDate: string;
-    endDate: string;
-    subjects: {
-        name: string;
-        themes: {
-            name: string;
-        }[];
-    }[];
-
-}
+import { FormDataSchedule } from "@/app/lib/types/types";
 
 type SubjectProps = {
-    formData: FormData
+    formDataSchedule: FormDataSchedule
     handleChangeAction: (e: React.ChangeEvent<HTMLInputElement>, step: number, index?: number, themeIndex?: number) => void
     handleNextAction: () => void
     handlePrevAction: () => void
@@ -21,11 +11,11 @@ type SubjectProps = {
     handleRemoveFieldAction: (step: number, index: number, themeIndex?: number) => void
 }
 
-export default function Subject({ formData, handleChangeAction, handleNextAction, handlePrevAction, handleAddFieldAction, handleRemoveFieldAction }: SubjectProps) {
+export default function Subject({ formDataSchedule, handleChangeAction, handleNextAction, handlePrevAction, handleAddFieldAction, handleRemoveFieldAction }: SubjectProps) {
     return (
         <div>
             <h2>Step 2: Subjects</h2>
-            {formData.subjects.map((subject, index) => (
+            {formDataSchedule.subjects.map((subject, index) => (
                 <div key={index} className="flex gap-4 items-center">
                     <label htmlFor={`subject-${index}`}>Subject {index + 1}</label>
                     <input
@@ -36,7 +26,7 @@ export default function Subject({ formData, handleChangeAction, handleNextAction
                         placeholder="Enter subject name"
                         required
                     />
-                    {formData.subjects.length > 1 && (
+                    {formDataSchedule.subjects.length > 1 && (
                         <button
                             type="button"
                             onClick={() => handleRemoveFieldAction(2, index)}

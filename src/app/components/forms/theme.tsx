@@ -1,19 +1,11 @@
 'use client'
 
-type FormData = {
-    startDate: string;
-    endDate: string;
-    subjects: {
-        name: string;
-        themes: {
-            name: string;
-        }[];
-    }[];
+import { FormDataSchedule } from "@/app/lib/types/types"
 
-}
+
 
 type ThemeProps = {
-    formData: FormData
+    formDataSchedule: FormDataSchedule
     handleChangeAction: (e: React.ChangeEvent<HTMLInputElement>, step: number, index?: number, themeIndex?: number) => void
     handlePrevAction: () => void
     handleAddFieldAction: (step: number, subjectIndex?: number) => void
@@ -22,11 +14,11 @@ type ThemeProps = {
 }
 
 
-export default function Theme({formData,handleSubmitAction, handleAddFieldAction, handleChangeAction, handleRemoveFieldAction, handlePrevAction }: ThemeProps) {
+export default function Theme({formDataSchedule,handleSubmitAction, handleAddFieldAction, handleChangeAction, handleRemoveFieldAction, handlePrevAction }: ThemeProps) {
     return (
         <div className='flex flex-col gap-4 p-8'>
             <h2>Step 3: Themes</h2>
-            {formData.subjects.map((subject, index) => (
+            {formDataSchedule.subjects.map((subject, index) => (
                 <div key={index} className="flex flex-col gap-3">
                     <div className="flex gap-4 justify-between">
                         <h3>Subject {index + 1}: {subject.name}</h3>

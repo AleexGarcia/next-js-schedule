@@ -1,6 +1,8 @@
 'use server'
 
+
 import { redirect } from "next/navigation";
+import { FormDataSchedule, Subject } from "./types/types";
 
 export const createUser = async (formData: FormData) => {
 
@@ -51,15 +53,11 @@ export const login = async (formData: FormData) => {
     }
 }
 
-export const createSchedule = async (formData: FormData) => {
+export const createSchedule = async (schedule: FormDataSchedule) => {
 
     const apiUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api/studyschedules' : '/api/users';
-
-    const schedule = {
-        name: formData.get('name'),
-        startDate: formData.get('email'),
-        endDate: formData.get('password')
-    }
+    
+    await createManySubjects(schedule.subjects);
 
     try {
         const response = await fetch(apiUrl, {
@@ -76,9 +74,9 @@ export const createSchedule = async (formData: FormData) => {
     }
 }
 
-export const addSubjects = async (subjects:Array<{name: string}>) => {
-    const apiUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api/studyschedules' : '/api/users';
-
+export const createManySubjects = async (subjects: Array<Subject> ) => {
+    const apiUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api/subjects/multiple' : '/api/subjects/multiple';
+    
     try {
         const response = await fetch(apiUrl, {
             method: 'POST',
@@ -89,7 +87,6 @@ export const addSubjects = async (subjects:Array<{name: string}>) => {
         })
     } catch (error) {
         console.log('Erro na requisição', error);
-    } finally {
-        redirect('/themes');
     }
 }
+

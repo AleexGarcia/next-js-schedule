@@ -1,23 +1,14 @@
 'use client'
 
-type FormData = {
-    startDate: string;
-    endDate: string;
-    subjects: {
-        name: string;
-        themes: {
-            name: string;
-        }[];
-    }[];
+import { FormDataSchedule } from "@/app/lib/types/types"
 
-}
 
 type ScheduleProps = {
-    formData: FormData, handleChangeAction: (e: React.ChangeEvent<HTMLInputElement>, step: number, index?: number, themeIndex?: number) => void, handleNextAction: () => void
+    formDataSchedule: FormDataSchedule, handleChangeAction: (e: React.ChangeEvent<HTMLInputElement>, step: number, index?: number, themeIndex?: number) => void, handleNextAction: () => void
 }
 
 
-export function Schedule({ formData, handleChangeAction, handleNextAction }: ScheduleProps) {
+export function Schedule({ formDataSchedule, handleChangeAction, handleNextAction }: ScheduleProps) {
     return (
         <div>
             <h2>Step 1: Dates</h2>
@@ -26,7 +17,7 @@ export function Schedule({ formData, handleChangeAction, handleNextAction }: Sch
                 <input
                     type="date"
                     name="startDate"
-                    value={formData.startDate}
+                    value={formDataSchedule.startDate}
                     onChange={(e) => handleChangeAction(e, 1)}
                     required
                 />
@@ -36,7 +27,7 @@ export function Schedule({ formData, handleChangeAction, handleNextAction }: Sch
                 <input
                     type="date"
                     name="endDate"
-                    value={formData.endDate}
+                    value={formDataSchedule.endDate}
                     onChange={(e) => handleChangeAction(e, 1)}
                     required
                 />

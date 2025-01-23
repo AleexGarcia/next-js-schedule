@@ -1,8 +1,9 @@
 'use client'
 import { useState } from 'react';
-import { Schedule } from '../components/schedule';
-import Theme from '../components/theme';
-import Subject from '../components/subject';
+import { Schedule } from '../components/forms/schedule';
+import Theme from '../components/forms/theme';
+import Subject from '../components/forms/subject';
+import { FormDataSchedule } from '../lib/types/types';
 
 type Theme = {
     name: string;
@@ -13,11 +14,12 @@ type Subject = {
     themes: Theme[];
 };
 
+
 export default function MultiStepForm() {
 
     const [step, setStep] = useState<number>(1);
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormDataSchedule>({
         startDate: '',
         endDate: '',
         subjects: [{ name: '', themes: [{ name: '' }] }],
@@ -121,7 +123,7 @@ export default function MultiStepForm() {
 
                 {step === 1 && (
                     <Schedule
-                        formData={formData}
+                        formDataSchedule={formData}
                         handleChangeAction={handleChange}
                         handleNextAction={handleNext}
                     />
@@ -129,7 +131,7 @@ export default function MultiStepForm() {
 
                 {step === 2 && (
                     <Subject
-                        formData={formData}
+                        formDataSchedule={formData}
                         handleAddFieldAction={handleAddField}
                         handleChangeAction={handleChange}
                         handleNextAction={handleNext}
@@ -141,7 +143,7 @@ export default function MultiStepForm() {
 
                 {step === 3 && (
                     <Theme
-                        formData={formData}
+                        formDataSchedule={formData}
                         handleChangeAction={handleChange}
                         handleAddFieldAction={handleAddField}
                         handlePrevAction={handlePrev}
@@ -149,7 +151,7 @@ export default function MultiStepForm() {
                         handleSubmitAction={handleSubmit}
                     />
                 )}
-                
+
             </form>
         </div>
     );
