@@ -11,7 +11,7 @@ export default function Signup() {
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm ">
-                <form className="space-y-6" action={createUser} method="POST">
+                <form className="space-y-6" action={createUser}>
                     <div>
                         <label htmlFor="name" className="block text-sm/6 font-medium text-gray-900 dark:text-white">Name</label>
                         <div className="mt-2">
@@ -39,7 +39,7 @@ export default function Signup() {
 
                 <p className="mt-10 text-center text-sm/6 text-gray-500">
                     Already have an account?
-                    <Link href="/signup" className="font-semibold text-indigo-600 hover:text-indigo-500"> Log in</Link>
+                    <Link href="/" className="font-semibold text-indigo-600 hover:text-indigo-500"> Log in</Link>
                 </p>
             </div>
         </div>

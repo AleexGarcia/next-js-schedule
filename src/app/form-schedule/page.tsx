@@ -4,6 +4,7 @@ import { Schedule } from '../components/forms/schedule';
 import Theme from '../components/forms/theme';
 import Subject from '../components/forms/subject';
 import { FormDataSchedule } from '../lib/types/types';
+import { createSchedule } from '../lib/actions';
 
 type Theme = {
     name: string;
@@ -113,7 +114,7 @@ export default function MultiStepForm() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(formData);
+        createSchedule(formData);
     };
 
     return (
