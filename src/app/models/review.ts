@@ -1,13 +1,14 @@
 // /models/review.js
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 
-const reviewSchema = new mongoose.Schema({
+interface IReview {
+  themeId: ObjectId
+  reviewDate: Date
+  status: 'pending' | 'completed'
+}
+
+const reviewSchema = new mongoose.Schema<IReview>({
   themeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Theme', required: true },
-  reviewType: {
-    type: String,
-    enum: ['1_week', '1_month', '3_months'],
-    required: true,
-  },
   reviewDate: { type: Date, required: true },
   status: {
     type: String,
@@ -16,4 +17,4 @@ const reviewSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-export default mongoose.models.Review || mongoose.model('Review', reviewSchema);
+export default mongoose.models.Review || mongoose.model<IReview>('Review', reviewSchema);

@@ -1,7 +1,19 @@
 // /models/theme.js
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 
-const themeSchema = new mongoose.Schema({
+interface ITheme {
+  name: string
+  subject: ObjectId
+  studyStatus: 'not_studied' | 'in_progress' | 'reviewed'
+  reviews?: {
+    first?: ObjectId,
+    second?: ObjectId,
+    third?: ObjectId,
+  }
+}
+
+
+const themeSchema = new mongoose.Schema<ITheme>({
   name: { type: String, required: true },
   subject: { type: mongoose.Schema.Types.ObjectId, ref: 'Subject', required: true },
   studyStatus: {
@@ -9,7 +21,11 @@ const themeSchema = new mongoose.Schema({
     enum: ['not_studied', 'in_progress', 'reviewed'],
     default: 'not_studied',
   },
-  reviewDates: [{ type: Date }],
-},{timestamps: true});
+  reviews: {
+    first: { type: mongoose.Schema.Types.ObjectId, ref: 'Review' },
+    second: { type: mongoose.Schema.Types.ObjectId, ref: 'Review' },
+    third: { type: mongoose.Schema.Types.ObjectId, ref: 'Review' },
+  },
+}, { timestamps: true });
 
-export default mongoose.models.Theme || mongoose.model('Theme', themeSchema);
+export default mongoose.models.Theme || mongoose.model<ITheme>('Theme', themeSchema);
