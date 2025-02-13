@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const schedule = await Schedule.find();
-    
+
     return NextResponse.json(schedule);
   } catch (error) {
     return NextResponse.json({ error: 'Erro ao buscar os studySchedules' }, { status: 500 });
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
         userId: jwt.payload.userId,
         name: body.name,
         startDate: body.startDate,
-        endDate: body.endDate
+        endDate: body.endDate,
       }
 
       const schedule = new Schedule(newSchedule);
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       const scheduleId = schedule._id;
       await createSubjectsAndAssociatedThemes(body.subjects, scheduleId);
 
-      return NextResponse.json({message:'Schedule Adicionado com Sucesso!'}, { status: 201 });
+      return NextResponse.json({ message: 'Schedule Adicionado com Sucesso!' }, { status: 201 });
     }
 
     throw new Error('Unauthorized: Token não encontrado');
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
 }
 
 
-const createSubjectsAndAssociatedThemes = async (subjects: SubjectType[], scheduleId: ObjectId) => {
+const createSubjectsAndAssociatedThemes = async (subjects: { name: string, themes: { name: string }[]}[], scheduleId: ObjectId) => {
   try {
 
     return await Promise.all(
@@ -80,7 +80,7 @@ const createSubjectsAndAssociatedThemes = async (subjects: SubjectType[], schedu
             subject.themes.map(async theme => {
               const newTheme = new Theme({
                 name: theme.name,
-                subject: savedSubject._id,
+                subjectId: savedSubject._id,
                 studyStatus: 'not_studied',
                 reviews: null
               });
@@ -96,7 +96,7 @@ const createSubjectsAndAssociatedThemes = async (subjects: SubjectType[], schedu
 
   } catch (error) {
     console.error("Erro ao criar Subjects e Themes:", error);
-    throw error; 
+    throw error;
   }
 };
 

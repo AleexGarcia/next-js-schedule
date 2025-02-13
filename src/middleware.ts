@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
+import { redirect } from 'next/navigation';
 
 export const config = {
     matcher: [
@@ -16,7 +17,7 @@ export const config = {
 
 export async function middleware(request: NextRequest) {
 
-    const tokenCookie =  await request.cookies.get('token');
+    const tokenCookie = await request.cookies.get('token');
     const { pathname } = request.nextUrl;
 
     if (!tokenCookie) {
@@ -26,17 +27,17 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/', request.url));
     }
 
-    try {
+    if (pathname === '/') {
+        return NextResponse.redirect(new URL('/main/dashboard', request.url));
+    }
 
+    try {
         const token = tokenCookie.value;
         await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET!));
-        if (pathname === '/') {
-            return NextResponse.redirect(new URL('/home', request.url));
-        }
-
         return NextResponse.next();
     } catch (error) {
-        const response = NextResponse.json({ error: 'Unauthorized: Token inválido ou expirado' }, { status: 401 });
+        
+        const response = NextResponse.redirect(new URL('/', request.url));
         response.headers.set('Set-Cookie', 'token=; Path=/; HttpOnly; Secure; Max-Age=0');
         return response;
     }

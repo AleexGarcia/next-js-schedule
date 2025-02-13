@@ -6,16 +6,33 @@ import Schedule from '@/app/models/schedule';  // Modelo StudySchedule
 import Subject from '@/app/models/subject';
 import Theme from '@/app/models/theme';
 
-// Função GET para buscar um studySchedule pelo id
+
+
+
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
     await dbConnection.connect();  // Conectar ao banco de dados
-
+    const { id } = await params;
     try {
-        const schedule = await Schedule.findById(params.id);  // Buscar studySchedule pelo id
+
+        const schedule = await Schedule.findOne({ _id: id }).exec();
+        const subjects = await Subject.find({ scheduleId: id }).exec();
+        const subjectsPopulatated = await Promise.all(subjects.map( async subject => {
+            const themes = await Theme.find({ subjectId: subject.id })
+            return {
+                _id: subject.id,
+                name: subject.name,
+                themes: themes
+            }
+        }));
+         const dto = {
+            general: schedule,
+            subjects: subjectsPopulatated
+         }
+
         if (!schedule) {
             return NextResponse.json({ error: 'StudySchedule não encontrada' }, { status: 404 });
         }
-        return NextResponse.json(schedule);  // Retornar o studySchedule encontrado
+        return NextResponse.json(dto);  // Retornar o studySchedule encontrado
     } catch (error) {
         return NextResponse.json({ error: 'Erro ao buscar o studySchedule' }, { status: 500 });
     } finally {
@@ -45,14 +62,14 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     await dbConnection.connect();
     try {
         const { id } = await params;
-        const deletedSchedule = await Schedule.findOneAndDelete({_id: id}).exec();
+        const deletedSchedule = await Schedule.findOneAndDelete({ _id: id }).exec();
         const subjects = await Subject.find({ scheduleId: id }).exec();
 
         const deletesThemes = Promise.all(subjects.map(async subject => {
             return await Theme.deleteMany({ subjectId: subject._id })
         }));
-    
-        const deletedSubjects = await Subject.deleteMany({scheduleId: id})
+
+        const deletedSubjects = await Subject.deleteMany({ scheduleId: id })
 
         if (!deletedSchedule) {
             return NextResponse.json({ error: 'StudySchedule não encontrada' }, { status: 404 });

@@ -15,4 +15,13 @@ const scheduleSchema = new mongoose.Schema<ISchedule>({
   endDate: { type: Date, required: true },
 }, { timestamps: true });
 
+scheduleSchema.virtual('subjects', {
+  ref: 'Subject',
+  localField: '_id',
+  foreignField: 'scheduleId'
+})
+
+scheduleSchema.set('toJSON', { virtuals: true });
+scheduleSchema.set('toObject', { virtuals: true });
+
 export default mongoose.models.Schedule || mongoose.model<ISchedule>('Schedule', scheduleSchema);

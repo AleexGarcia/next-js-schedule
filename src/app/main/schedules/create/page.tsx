@@ -1,12 +1,13 @@
 'use client'
 
-import { Schedule } from "@/app/home/schedules/create/components/schedule";
-import Subject from "@/app/home/schedules/create/components/subject";
-import Theme from "@/app/home/schedules/create/components/theme";
+import { Schedule } from "@/app/main/schedules/create/components/schedule";
+import Subject from "@/app/main/schedules/create/components/subject";
+import Theme from "@/app/main/schedules/create/components/theme";
 import { FormDataSchedule } from "@/app/lib/types/types";
 import { useState } from "react";
-import { object, z } from 'zod';
+import { z } from 'zod';
 import { useRouter } from "next/navigation";
+import { instance } from "@/app/lib/axios";
 type Theme = {
     name: string;
 };
@@ -149,20 +150,10 @@ export default function MultiStepForm() {
     };
 
     const createSchedule = async (schedule: FormDataSchedule) => {
-
-        const apiUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api/schedules' : '/api/schedules';
-
         try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify(schedule),
-            })
-            if (response.status === 201){
-                router.push('/home/schedules')
+            const res = await instance.post('schedules', JSON.stringify(schedule));
+            if (res.status === 201) {
+                router.push('/main/schedules')
             }
         } catch (error) {
             console.log('Erro na requisição', error);

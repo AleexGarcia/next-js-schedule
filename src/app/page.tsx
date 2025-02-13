@@ -12,7 +12,7 @@ export default function Home() {
 
     if (result?.status === 200) {
       setError(null);
-      redirect('/home/dashboard');
+      redirect('/main/dashboard');
     } else {
       setError(body.error);
       localStorage.setItem('name', body.name);

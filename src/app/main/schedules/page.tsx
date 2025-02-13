@@ -3,6 +3,8 @@ import Button from "@/app/components/button";
 import { redirect } from "next/navigation";
 import ScheduleCard from "./components/scheduleCard";
 import { useState, useEffect } from "react";
+import { instance } from "@/app/lib/axios";
+import { AxiosResponse } from "axios";
 
 type scheduleDTO = {
     createdAt: string;
@@ -19,28 +21,28 @@ export default function Schedules() {
     const [schedules, setSchedules] = useState<Array<scheduleDTO>>([]);
     useEffect(() => {
         async function fetchData() {
-            const res = await fetch('http://localhost:3000/api/schedules');
-            const data = await res.json();
-            setSchedules(data);
+            try {
+                const res: AxiosResponse<Array<Partial<scheduleDTO>>, any> = await instance.get('schedules');
+                if (res.status === 200) {
+                    setSchedules(res.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
         }
         fetchData();
     }, [])
 
     const createSchedule = () => {
-        redirect('/home/schedules/create');
+        redirect('/main/schedules/create');
     }
     const removeSchedule = async (id: string): Promise<void> => {
         try {
-            const res = await fetch(`http://localhost:3000/api/schedules/${id}`, {
-                method: 'DELETE',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' }
-            })
-
-            if (res.ok) {
-                setSchedules([...schedules.filter(item => item._id !== id)]);
+            const res = await instance.delete(`schedules/${id}`);
+            if (res.status === 200) {
+                const newSchedules = schedules.filter(item => item._id !== id);
+                setSchedules(newSchedules);
             }
-
         } catch (error) {
             console.log(error);
         }

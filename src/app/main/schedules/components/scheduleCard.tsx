@@ -21,7 +21,7 @@ export default function ScheduleCard({ name, startDate, endDate, id,removeSchedu
             </div>
             <div className="flex justify-between">
                 <button onClick={() => removeSchedule(id)}>Delete</button>
-                <Link href={'/home/schedules/edit'}>Edit</Link>
+                <Link href={`/main/schedules/edit/${id}`}>Edit</Link>
             </div>
         </div>
     )
