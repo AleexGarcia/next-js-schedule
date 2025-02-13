@@ -3,7 +3,7 @@ import mongoose, { ObjectId } from 'mongoose';
 
 interface ITheme {
   name: string
-  subject: ObjectId
+  subjectId: ObjectId
   studyStatus: 'not_studied' | 'in_progress' | 'reviewed'
   reviews?: {
     first?: ObjectId,
@@ -15,7 +15,7 @@ interface ITheme {
 
 const themeSchema = new mongoose.Schema<ITheme>({
   name: { type: String, required: true },
-  subject: { type: mongoose.Schema.Types.ObjectId, ref: 'Subject', required: true },
+  subjectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Subject', required: true },
   studyStatus: {
     type: String,
     enum: ['not_studied', 'in_progress', 'reviewed'],

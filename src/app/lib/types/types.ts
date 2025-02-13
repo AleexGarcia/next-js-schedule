@@ -1,4 +1,5 @@
 export type FormDataSchedule = {
+    name:string
     startDate: string;
     endDate: string;
     subjects: {

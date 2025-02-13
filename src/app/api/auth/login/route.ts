@@ -7,12 +7,10 @@ import jwt from 'jsonwebtoken';
 export async function POST(request: NextRequest) {
     await dbConnection.connect();
     try {
+
         const { email, password } = await request.json();
-        console.log(email);
         const query = User.findOne({ email: email });
-        console.log(query);
         const user = await query.exec();
-        console.log(user);
 
         if (!user) {
             return NextResponse.json({ error: 'Usuário não encontrado' }, { status: 404 });
@@ -30,7 +28,7 @@ export async function POST(request: NextRequest) {
             { expiresIn: '1h' }
         )
 
-        const response = NextResponse.json({ message: 'Login bem-sucedido' },{status: 200});
+        const response = NextResponse.json({ message: 'Login bem-sucedido', user: user.name }, { status: 200 });
 
         response.cookies.set('token', token, {
             httpOnly: true,
@@ -38,7 +36,6 @@ export async function POST(request: NextRequest) {
             sameSite: 'strict',
             maxAge: 3600000
         })
-
 
         return response;
 

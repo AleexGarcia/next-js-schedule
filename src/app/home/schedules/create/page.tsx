@@ -1,11 +1,12 @@
 'use client'
-import { useState } from 'react';
-import { Schedule } from '../components/forms/schedule';
-import Theme from '../components/forms/theme';
-import Subject from '../components/forms/subject';
-import { FormDataSchedule } from '../lib/types/types';
-import { createSchedule } from '../lib/actions';
 
+import { Schedule } from "@/app/home/schedules/create/components/schedule";
+import Subject from "@/app/home/schedules/create/components/subject";
+import Theme from "@/app/home/schedules/create/components/theme";
+import { FormDataSchedule } from "@/app/lib/types/types";
+import { useState } from "react";
+import { object, z } from 'zod';
+import { useRouter } from "next/navigation";
 type Theme = {
     name: string;
 };
@@ -15,12 +16,37 @@ type Subject = {
     themes: Theme[];
 };
 
-
 export default function MultiStepForm() {
 
-    const [step, setStep] = useState<number>(1);
+    const router = useRouter();
 
+    const generalSchema = z.object({
+        name: z.string().nonempty(),
+        startDate: z.string().date().nonempty(),
+        endDate: z.string().date().nonempty()
+    })
+
+    const subjectsSchema = z.array(z.object({
+        name: z.string().nonempty()
+    }))
+
+    const formDataSchema = z.object({
+        name: z.string().nonempty(),
+        startDate: z.string().date().nonempty(),
+        endDate: z.string().date().nonempty(),
+        subjects: z.array(z.object({
+            name: z.string().nonempty(),
+            themes: z.array(z.object({
+                name: z.string().nonempty()
+            }))
+        }))
+    })
+
+
+    const [step, setStep] = useState<number>(1);
+    const [error, setError] = useState<string>('');
     const [formData, setFormData] = useState<FormDataSchedule>({
+        name: '',
         startDate: '',
         endDate: '',
         subjects: [{ name: '', themes: [{ name: '' }] }],
@@ -105,23 +131,58 @@ export default function MultiStepForm() {
     };
 
     const handleNext = () => {
-        setStep(step + 1);
+        if (step === 1) {
+            const isValid = generalSchema.parse({
+                name: formData.name,
+                startDate: formData.startDate,
+                endDate: formData.endDate,
+            })
+            isValid ? setStep(step + 1) : setError('');
+        } else if (step === 2) {
+            const isValid = subjectsSchema.parse(formData.subjects);
+            isValid ? setStep(step + 1) : setError('');
+        }
     };
 
     const handlePrev = () => {
         setStep(step - 1);
     };
 
+    const createSchedule = async (schedule: FormDataSchedule) => {
+
+        const apiUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api/schedules' : '/api/schedules';
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify(schedule),
+            })
+            if (response.status === 201){
+                router.push('/home/schedules')
+            }
+        } catch (error) {
+            console.log('Erro na requisição', error);
+        }
+    }
+
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        createSchedule(formData);
+        const isValid = formDataSchema.parse(formData);
+        if (isValid) {
+            createSchedule(formData);
+        }
+
     };
 
     return (
-        <div>
-            <h1>Multi-Step Form</h1>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
+        <div className="flex-grow">
+            <h1 className="text-center">Create a new Schedule</h1>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 items-center">
                 {step === 1 && (
                     <Schedule
                         formDataSchedule={formData}

@@ -8,20 +8,20 @@ export default function Home() {
 
   const handleSubmit = async (formData: FormData) => {
     const result = await login(formData);
-    const message = await result?.json();
-    console.log(message);
+    const body = await result?.json();
+
     if (result?.status === 200) {
       setError(null);
-      redirect('/dashboard');
-    }else{
-     setError(message.error);
+      redirect('/home/dashboard');
+    } else {
+      setError(body.error);
+      localStorage.setItem('name', body.name);
     }
-
   }
 
   const login = async (formData: FormData) => {
 
-    const apiUrl = 'http://localhost:3000/api/auth';
+    const apiUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api/auth/login' : '/api/auth/login';
 
     const user = {
       email: formData.get('email'),
@@ -36,6 +36,7 @@ export default function Home() {
         },
         body: JSON.stringify(user),
       })
+
       return response;
 
     } catch (error) {

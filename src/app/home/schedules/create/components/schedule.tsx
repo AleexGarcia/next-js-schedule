@@ -10,11 +10,23 @@ type ScheduleProps = {
 
 export function Schedule({ formDataSchedule, handleChangeAction, handleNextAction }: ScheduleProps) {
     return (
-        <div>
-            <h2>Step 1: Dates</h2>
-            <div className="flex flex-col">
+        <div className="flex flex-col p-4 gap-4 max-w-xs">
+            <h2>Step 1 - General Information</h2>
+            <div className="flex flex-col gap-2">
+                <label htmlFor="startDate">Name:</label>
+                <input
+                    className="p-2 rounded-lg dark:text-black"
+                    type="text"
+                    name="name"
+                    value={formDataSchedule.name}
+                    onChange={(e) => handleChangeAction(e, 1)}
+                    required
+                />
+            </div>
+            <div className="flex flex-col gap-2">
                 <label htmlFor="startDate">Start Date:</label>
                 <input
+                    className="p-2 rounded-lg dark:text-black"
                     type="date"
                     name="startDate"
                     value={formDataSchedule.startDate}
@@ -22,9 +34,10 @@ export function Schedule({ formDataSchedule, handleChangeAction, handleNextActio
                     required
                 />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-2">
                 <label htmlFor="endDate">End Date:</label>
                 <input
+                    className="p-2 rounded-lg dark:text-black"
                     type="date"
                     name="endDate"
                     value={formDataSchedule.endDate}

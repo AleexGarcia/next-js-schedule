@@ -30,20 +30,4 @@ export const createUser = async (formData: FormData) => {
 }
 
 
-export const createSchedule = async (schedule: FormDataSchedule) => {
-
-    const apiUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api/schedules' : '/api/schedules';
-    
-    try {
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(schedule),
-        })
-    } catch (error) {
-        console.log('Erro na requisição', error);
-    } 
-}
 
