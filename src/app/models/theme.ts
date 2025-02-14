@@ -28,4 +28,7 @@ const themeSchema = new mongoose.Schema<ITheme>({
   },
 }, { timestamps: true });
 
-export default mongoose.models.Theme || mongoose.model<ITheme>('Theme', themeSchema);
+themeSchema.set('toJSON', { virtuals: true });
+themeSchema.set('toObject', { virtuals: true });
+
+export default mongoose.models.Theme || mongoose.model<ITheme>('Theme', themeSchema,'themes');

@@ -10,7 +10,7 @@ export const config = {
         '/api/reviews',
         '/api/themes',
         '/form-schedule',
-        '/home/:path*',
+        '/main/:path*',
         '/'
     ],
 };

@@ -10,29 +10,18 @@ import Theme from '@/app/models/theme';
 
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-    await dbConnection.connect();  // Conectar ao banco de dados
+    await dbConnection.connect();
     const { id } = await params;
     try {
-
-        const schedule = await Schedule.findOne({ _id: id }).exec();
-        const subjects = await Subject.find({ scheduleId: id }).exec();
-        const subjectsPopulatated = await Promise.all(subjects.map( async subject => {
-            const themes = await Theme.find({ subjectId: subject.id })
-            return {
-                _id: subject.id,
-                name: subject.name,
-                themes: themes
-            }
-        }));
-         const dto = {
-            general: schedule,
-            subjects: subjectsPopulatated
-         }
+        
+        const schedule = await Schedule.findOne({ _id: id }).populate({
+            path: 'subjects', populate: { path: 'themes' }
+        })
 
         if (!schedule) {
             return NextResponse.json({ error: 'StudySchedule não encontrada' }, { status: 404 });
         }
-        return NextResponse.json(dto);  // Retornar o studySchedule encontrado
+        return NextResponse.json(schedule);
     } catch (error) {
         return NextResponse.json({ error: 'Erro ao buscar o studySchedule' }, { status: 500 });
     } finally {

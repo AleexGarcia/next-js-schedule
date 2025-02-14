@@ -1,48 +1,43 @@
 'use client'
 
-import { Schedule } from "@/app/main/schedules/create/components/schedule";
-import Subject from "@/app/main/schedules/create/components/subject";
-import Theme from "@/app/main/schedules/create/components/theme";
+import { FormSchedule } from "@/app/main/schedules/form/components/formSchedule";
+import FormSubject from "@/app/main/schedules/form/components/formSubject";
+import FormTheme from "@/app/main/schedules/form/components/formTheme";
 import { FormDataSchedule } from "@/app/lib/types/types";
 import { useState } from "react";
 import { z } from 'zod';
 import { useRouter } from "next/navigation";
 import { instance } from "@/app/lib/axios";
-type Theme = {
-    name: string;
-};
 
-type Subject = {
-    name: string;
-    themes: Theme[];
-};
+const generalSchema = z.object({
+    name: z.string().nonempty(),
+    startDate: z.string().date().nonempty(),
+    endDate: z.string().date().nonempty()
+})
+
+const subjectsSchema = z.array(z.object({
+    name: z.string().nonempty()
+}))
+
+const themesSchema = z.array(z.object({
+    name: z.string().nonempty()
+}))
+
+const formDataSchema = z.object({
+    name: z.string().nonempty(),
+    startDate: z.string().date().nonempty(),
+    endDate: z.string().date().nonempty(),
+    subjects: z.array(z.object({
+        name: z.string().nonempty(),
+        themes: z.array(z.object({
+            name: z.string().nonempty()
+        }))
+    }))
+})
 
 export default function MultiStepForm() {
 
     const router = useRouter();
-
-    const generalSchema = z.object({
-        name: z.string().nonempty(),
-        startDate: z.string().date().nonempty(),
-        endDate: z.string().date().nonempty()
-    })
-
-    const subjectsSchema = z.array(z.object({
-        name: z.string().nonempty()
-    }))
-
-    const formDataSchema = z.object({
-        name: z.string().nonempty(),
-        startDate: z.string().date().nonempty(),
-        endDate: z.string().date().nonempty(),
-        subjects: z.array(z.object({
-            name: z.string().nonempty(),
-            themes: z.array(z.object({
-                name: z.string().nonempty()
-            }))
-        }))
-    })
-
 
     const [step, setStep] = useState<number>(1);
     const [error, setError] = useState<string>('');
@@ -52,6 +47,10 @@ export default function MultiStepForm() {
         endDate: '',
         subjects: [{ name: '', themes: [{ name: '' }] }],
     });
+
+    const [subjectIndex, SetSubjectIndex] = useState<number>(0);
+    const [subject, SetSubject] = useState(formData.subjects[subjectIndex]);
+
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement>,
@@ -144,7 +143,25 @@ export default function MultiStepForm() {
             isValid ? setStep(step + 1) : setError('');
         }
     };
+    const handleNextSubject = () => {
 
+        try {
+            const isValid = themesSchema.parse(formData.subjects[subjectIndex].themes);
+            if (isValid) {
+                const newIndex = subjectIndex + 1;
+                SetSubjectIndex(newIndex);
+                SetSubject(formData.subjects[newIndex]);
+            }
+        } catch (error) {
+
+        }
+    };
+
+    const handlePrevSubject = () => {
+        const newIndex = subjectIndex - 1;
+        SetSubjectIndex(newIndex);
+        SetSubject(formData.subjects[newIndex]);
+    };
     const handlePrev = () => {
         setStep(step - 1);
     };
@@ -160,7 +177,6 @@ export default function MultiStepForm() {
         }
     }
 
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const isValid = formDataSchema.parse(formData);
@@ -175,7 +191,7 @@ export default function MultiStepForm() {
             <h1 className="text-center">Create a new Schedule</h1>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4 items-center">
                 {step === 1 && (
-                    <Schedule
+                    <FormSchedule
                         formDataSchedule={formData}
                         handleChangeAction={handleChange}
                         handleNextAction={handleNext}
@@ -183,7 +199,7 @@ export default function MultiStepForm() {
                 )}
 
                 {step === 2 && (
-                    <Subject
+                    <FormSubject
                         formDataSchedule={formData}
                         handleAddFieldAction={handleAddField}
                         handleChangeAction={handleChange}
@@ -195,16 +211,52 @@ export default function MultiStepForm() {
                 )}
 
                 {step === 3 && (
-                    <Theme
-                        formDataSchedule={formData}
+                    <FormTheme
+                        subject={subject}
+                        subjectIndex={subjectIndex}
                         handleChangeAction={handleChange}
                         handleAddFieldAction={handleAddField}
-                        handlePrevAction={handlePrev}
                         handleRemoveFieldAction={handleRemoveField}
-                        handleSubmitAction={handleSubmit}
                     />
                 )}
 
+
+                <div className="flex gap-4">
+
+                    {(step > 1 || step === 3 && subjectIndex === 0) &&
+                        (
+                            <button type="button" onClick={() => { handlePrev() }} className="p-2 bg-gray-400 rounded-lg">
+                                Previous Step
+                            </button>
+                        )
+                    }
+
+                    {step < 3 && (
+                        <button type="button" onClick={() => { handleNext() }} className="p-2 bg-gray-400 rounded-lg">
+                            Next Step
+                        </button>
+                    )}
+
+                    {step === 3 && (
+                        <>
+                            {subjectIndex > 0 && (
+                                <button type="button" onClick={() => { handlePrevSubject() }} className="p-2 bg-gray-400 rounded-lg">
+                                    Previous Subject
+                                </button>
+                            )}
+                            {subjectIndex < formData.subjects.length - 1 ? (
+                                <button type="button" onClick={e => handleNextSubject()} className="p-2 bg-orange-500 rounded-lg">
+                                    Next Subject
+                                </button>
+                            ) : (
+                                <button type="submit" className="p-2 bg-orange-500 rounded-lg">
+                                    Submit
+                                </button>
+                            )}
+                        </>
+                    )}
+
+                </div>
             </form>
         </div>
     );

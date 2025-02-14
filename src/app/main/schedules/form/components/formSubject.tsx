@@ -1,17 +1,18 @@
 'use client'
 
 import { FormDataSchedule } from "@/app/lib/types/types";
+import { Dispatch, SetStateAction } from "react";
 
 type SubjectProps = {
     formDataSchedule: FormDataSchedule
     handleChangeAction: (e: React.ChangeEvent<HTMLInputElement>, step: number, index?: number, themeIndex?: number) => void
-    handleNextAction: () => void
-    handlePrevAction: () => void
     handleAddFieldAction: (step: number, subjectIndex?: number) => void
     handleRemoveFieldAction: (step: number, index: number, themeIndex?: number) => void
+    setSelection?: Dispatch<SetStateAction<boolean>>;
+    isSelected?: boolean
 }
 
-export default function Subject({ formDataSchedule, handleChangeAction, handleNextAction, handlePrevAction, handleAddFieldAction, handleRemoveFieldAction }: SubjectProps) {
+export default function FormSubject({ formDataSchedule, handleChangeAction, handleAddFieldAction, handleRemoveFieldAction, setSelection, isSelected }: SubjectProps) {
     return (
         <div className="p-4 max-w[350px] flex flex-col gap-4">
             <div className="flex gap-4 items-center justify-between">
@@ -33,26 +34,24 @@ export default function Subject({ formDataSchedule, handleChangeAction, handleNe
                             placeholder="Enter subject name"
                             required
                         />
-                        {formDataSchedule.subjects.length > 1 && (
-                            <button
-                                type="button"
-                                onClick={() => handleRemoveFieldAction(2, index)}
-                                className="bg-red-400 px-2 rounded-sm"
-                            >
-                                -
-                            </button>
+
+                        <button
+                            type="button"
+                            onClick={() => handleRemoveFieldAction(2, index)}
+                            className="bg-red-400 px-2 rounded-sm"
+                        >
+                            -
+                        </button>
+                        {(setSelection) && (
+                            <button onClick={() => {
+                                const n = isSelected ? false : true;
+                                setSelection(n);
+                            }}>⚙</button>
                         )}
                     </div>
                 ))}
             </div>
-            <div className="flex gap-8 justify-end">
-                <button type="button" onClick={() => { handlePrevAction() }} className="p-2 bg-gray-400 rounded-lg">
-                    Previous Step
-                </button>
-                <button type="button" onClick={() => { handleNextAction() }} className="p-2 bg-orange-500 rounded-lg">
-                    Next Step
-                </button>
-            </div>
+
         </div>
     )
 }

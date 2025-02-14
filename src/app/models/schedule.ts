@@ -1,4 +1,4 @@
-// /models/studySchedule.js
+
 import mongoose, { ObjectId } from 'mongoose';
 
 interface ISchedule {
@@ -24,4 +24,4 @@ scheduleSchema.virtual('subjects', {
 scheduleSchema.set('toJSON', { virtuals: true });
 scheduleSchema.set('toObject', { virtuals: true });
 
-export default mongoose.models.Schedule || mongoose.model<ISchedule>('Schedule', scheduleSchema);
+export default mongoose.models.Schedule || mongoose.model<ISchedule>('Schedule', scheduleSchema,'schedules');

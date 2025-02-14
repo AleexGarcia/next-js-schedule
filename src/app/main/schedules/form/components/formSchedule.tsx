@@ -4,14 +4,14 @@ import { FormDataSchedule } from "@/app/lib/types/types"
 
 
 type ScheduleProps = {
-    formDataSchedule: FormDataSchedule, handleChangeAction: (e: React.ChangeEvent<HTMLInputElement>, step: number, index?: number, themeIndex?: number) => void, handleNextAction: () => void
+    formDataSchedule: FormDataSchedule, handleChangeAction: (e: React.ChangeEvent<HTMLInputElement>, step: number, index?: number, themeIndex?: number) => void
 }
 
 
-export function Schedule({ formDataSchedule, handleChangeAction, handleNextAction }: ScheduleProps) {
+export function FormSchedule({ formDataSchedule, handleChangeAction }: ScheduleProps) {
     return (
         <div className="flex flex-col p-4 gap-4 max-w-xs">
-            <h2>Step 1 - General Information</h2>
+            <h2>General Information</h2>
             <div className="flex flex-col gap-2">
                 <label htmlFor="startDate">Name:</label>
                 <input
@@ -44,11 +44,6 @@ export function Schedule({ formDataSchedule, handleChangeAction, handleNextActio
                     onChange={(e) => handleChangeAction(e, 1)}
                     required
                 />
-            </div>
-            <div className="flex gap-4">
-                <button type="button" onClick={() => handleNextAction()} className="p-2 bg-orange-500 rounded-lg">
-                    Next Step
-                </button>
             </div>
         </div>
     )

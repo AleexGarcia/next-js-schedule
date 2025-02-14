@@ -22,9 +22,10 @@ export default function Schedules() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const res: AxiosResponse<Array<Partial<scheduleDTO>>, any> = await instance.get('schedules');
+                const res: AxiosResponse<Array<scheduleDTO>, any> = await instance.get('schedules');
                 if (res.status === 200) {
                     setSchedules(res.data);
+                  
                 }
             } catch (error) {
                 console.log(error);
@@ -34,7 +35,7 @@ export default function Schedules() {
     }, [])
 
     const createSchedule = () => {
-        redirect('/main/schedules/create');
+        redirect('/main/schedules/form/create');
     }
     const removeSchedule = async (id: string): Promise<void> => {
         try {
@@ -52,7 +53,7 @@ export default function Schedules() {
         <section className="flex-grow flex flex-col gap-4 p-2 ">
             <div className="flex w-full justify-between items-center">
                 <h1>My Schedules</h1>
-                <Button onClick={createSchedule} label="Create a new schedule" type="secundary" />
+                <Button onClick={createSchedule} label="Create a new schedule" custom="secundary" />
             </div>
             <div className="flex gap-4 flex-wrap">
                 {schedules.map(({ name, startDate, endDate, _id }: scheduleDTO) => (

@@ -15,7 +15,10 @@ const subjectSchema = new mongoose.Schema<ISubject>({
 subjectSchema.virtual('themes', {
   ref: 'Theme',
   localField: '_id',
-  foreignField: 'subjectId',
+  foreignField: 'subjectId'
 });
 
-export default mongoose.models.Subject || mongoose.model<ISubject>('Subject', subjectSchema);
+subjectSchema.set('toJSON', { virtuals: true });
+subjectSchema.set('toObject', { virtuals: true });
+
+export default mongoose.models.Subject || mongoose.model<ISubject>('Subject', subjectSchema,'subjects');
