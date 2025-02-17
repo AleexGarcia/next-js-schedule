@@ -1,46 +1,44 @@
 'use client'
 import Link from "next/link";
 import { useState } from "react";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { instance } from "./lib/axios";
+
+
 
 export default function Home() {
   const [error, setError] = useState<null | string>(null);
-
+  const router = useRouter();
   const handleSubmit = async (formData: FormData) => {
-    const result = await login(formData);
-    const body = await result?.json();
 
-    if (result?.status === 200) {
-      setError(null);
-      redirect('/main/dashboard');
-    } else {
-      setError(body.error);
-      localStorage.setItem('name', body.name);
+    try{
+      const result = await login(formData);
+
+      if (result?.status === 200) {
+        setError(null);
+        router.push('/main/dashboard');
+      } 
+    }catch(error: any){
+      const message = error.response?.data.error;
+      setError(message);
     }
+
   }
-
+ 
   const login = async (formData: FormData) => {
-
-    const apiUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api/auth/login' : '/api/auth/login';
-
+    
     const user = {
       email: formData.get('email'),
       password: formData.get('password')
     }
 
     try {
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user),
-      })
-
-      return response;
+      const res = await instance.post('auth/login',user);
+      return res;
 
     } catch (error) {
-      console.log('Erro na requisição', error);
+
+      throw error;
     }
   }
 

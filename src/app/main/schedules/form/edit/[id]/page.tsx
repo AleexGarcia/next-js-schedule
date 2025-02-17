@@ -5,7 +5,7 @@ import { FormSchedule } from "../../components/formSchedule";
 import FormSubject from "../../components/formSubject";
 import FormTheme from "../../components/formTheme";
 import { useEffect, useState } from "react";
-import { FormDataSchedule } from "@/app/lib/types/types";
+import { FormDataSchedule, Subject, Theme } from "@/app/lib/types/types";
 import { instance } from "@/app/lib/axios";
 
 export default function EditSchedule() {
@@ -17,12 +17,20 @@ export default function EditSchedule() {
         subjects: [{ name: '', themes: [{ name: '' }] }],
     });
 
-    const [isSelected, setSelection] = useState<boolean>(false);
+    const [subject, setSubject] = useState<Subject | undefined>(undefined);
 
     useEffect(() => {
         async function getScheduleById(id: string) {
             const res = await instance.get(`schedules/${id}`);
-            setFormData(res.data);
+
+            const newFormData: FormDataSchedule = {
+                startDate: new Date(res.data.startDate).toISOString().split('T')[0],
+                endDate: new Date(res.data.endDate).toISOString().split('T')[0],
+                name: res.data.name,
+                subjects: res.data.subjects
+            }
+            console.log(newFormData);
+            setFormData(newFormData);
         }
         getScheduleById(params.id as string)
     }, [])
@@ -105,6 +113,11 @@ export default function EditSchedule() {
         }
     };
 
+    const handleFormTheme = (id: string) => {
+        const selectedSubject = formData.subjects.find((subject) => subject.id === id);
+        setSubject(selectedSubject);
+    }
+
     return (
         <section className="flex w-full">
             <div className="w-[33%]">
@@ -119,16 +132,14 @@ export default function EditSchedule() {
                     handleChangeAction={handleChange}
                     handleAddFieldAction={handleAddField}
                     handleRemoveFieldAction={handleRemoveField}
-                    isSelected={isSelected}
-                    setSelection={setSelection}
+                    handleFormTheme={handleFormTheme}
                 />
             </div>
-            {isSelected ?
+            {subject ?
                 <div className="w-[33%]">
-                    <FormTheme subject={{
-                        name: "",
-                        themes: []
-                    }} subjectIndex={0}
+                    <FormTheme
+                        subject={subject}
+                        subjectIndex={0}
                         handleChangeAction={handleChange}
                         handleAddFieldAction={handleAddField}
                         handleRemoveFieldAction={handleRemoveField} />

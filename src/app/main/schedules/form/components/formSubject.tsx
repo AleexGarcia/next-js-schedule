@@ -1,18 +1,16 @@
 'use client'
 
-import { FormDataSchedule } from "@/app/lib/types/types";
-import { Dispatch, SetStateAction } from "react";
+import { FormDataSchedule, Theme } from "@/app/lib/types/types";
 
 type SubjectProps = {
     formDataSchedule: FormDataSchedule
     handleChangeAction: (e: React.ChangeEvent<HTMLInputElement>, step: number, index?: number, themeIndex?: number) => void
     handleAddFieldAction: (step: number, subjectIndex?: number) => void
     handleRemoveFieldAction: (step: number, index: number, themeIndex?: number) => void
-    setSelection?: Dispatch<SetStateAction<boolean>>;
-    isSelected?: boolean
+    handleFormTheme?: (id: string) => void;
 }
 
-export default function FormSubject({ formDataSchedule, handleChangeAction, handleAddFieldAction, handleRemoveFieldAction, setSelection, isSelected }: SubjectProps) {
+export default function FormSubject({ formDataSchedule, handleChangeAction, handleAddFieldAction, handleRemoveFieldAction, handleFormTheme }: SubjectProps) {
     return (
         <div className="p-4 max-w[350px] flex flex-col gap-4">
             <div className="flex gap-4 items-center justify-between">
@@ -42,10 +40,10 @@ export default function FormSubject({ formDataSchedule, handleChangeAction, hand
                         >
                             -
                         </button>
-                        {(setSelection) && (
+                        {(handleFormTheme) && (
                             <button onClick={() => {
-                                const n = isSelected ? false : true;
-                                setSelection(n);
+                                if (subject.id)
+                                    handleFormTheme(subject.id);
                             }}>⚙</button>
                         )}
                     </div>

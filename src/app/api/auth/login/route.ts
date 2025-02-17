@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) {    
     await dbConnection.connect();
     try {
 
